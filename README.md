@@ -1,0 +1,3 @@
+In progress...
+Microcontroller used in project STM32F103C8Tx
+ARM®32-bit Cortex®-M3 CPU
