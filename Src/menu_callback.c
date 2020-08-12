@@ -14,6 +14,7 @@
 #include "clock.h"
 #include "menu.h"
 #include "app.h"
+#include "backup_memory.h"
 
 
 extern const unsigned char font1[];
@@ -116,6 +117,9 @@ void callback_temperature()
       actualizationOption0 = false;
     }
   } //  end main loop function
+  // write changes to backup memory
+  write_day_temp_to_BR((uint8_t)get_day_temperature_value());
+  write_night_temp_to_BR((uint8_t)get_night_temperature_value());
   back_to_menu();
 }
 
@@ -154,17 +158,22 @@ void callback_humidity()
     actualizationOption0 = false;
     }
   } //  end main loop function
+  // write changes to backup memory
+  write_humidity_to_BR((uint8_t)get_humidity_value());
   back_to_menu();
 }
 
 void callback_daily_cycle_yes() // not finished
 {
-  static RTC_TimeTypeDef t1 = {6, 30, 0};
-  static RTC_TimeTypeDef t2 = {21, 0, 0};
+  //   static RTC_TimeTypeDef t1 = {6, 30, 0};
+  //   static RTC_TimeTypeDef t2 = {21, 0, 0};
+  RTC_TimeTypeDef t1 = {6, 30, 0};
+  RTC_TimeTypeDef t2 = {21, 0, 0};
 
-  //
-  static bool visitSetNight = false;
-  static bool visitSetDay   = false;
+  // static bool visitSetNight = false;
+  // static bool visitSetDay   = false;
+  bool visitSetNight = false;
+  bool visitSetDay   = false;
 
   key_up_func     = add_clock_hours;
   key_down_func   = sub_clock_hours;
@@ -256,6 +265,10 @@ void callback_daily_cycle_yes() // not finished
   visitSetDay   = false;
   visitSetNight = false;
   set_daily_cycle(t1, t2);
+
+  // write changes to backup memory
+  write_start_day_to_BR(&t1);
+  write_stop_day_to_BR(&t2);
   back_to_menu();
 }
 
@@ -269,12 +282,16 @@ void callback_daily_cycle_no()
 void callback_lighting_yes()
 {
   set_lighting(true);
+  // write changes to backup memory
+  write_lighting_to_BR(true);
   menu_back();
 }
 
 void callback_lighting_no()
 {
   set_lighting(false);
+  // write changes to backup memory
+  write_lighting_to_BR(false);
   menu_back();
 }
 
