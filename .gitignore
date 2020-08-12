@@ -32,3 +32,4 @@ Src/syscalls.c
 Src/sysmem.c
 Src/system_stm32f1xx.c
 Src/stm32f1xx_hal_msp.c
+source.c

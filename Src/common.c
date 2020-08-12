@@ -6,11 +6,13 @@
  */
 
 #include <stdbool.h>
+
 #include "common.h"
 #include "main.h"
 #include "menu.h"
 #include "clock.h"
 
+//FIXME
 static int setDayTemperature     = 25;    //C
 static int setNightTemperature   = 20;    //C
 static int setHumidity           = 50;    //%
@@ -19,8 +21,8 @@ static int temperatureFromSensor;
 static int humidityFromSensor;
 
 static bool setLighting          = false;
-static RTC_TimeTypeDef startDay  = {6, 0, 0,};
-static RTC_TimeTypeDef stopDay   = {22, 0, 0,};
+static RTC_TimeTypeDef startDay;  // = {6, 0, 0,};
+static RTC_TimeTypeDef stopDay;   // = {22, 0, 0,};
 
 
 // getters
@@ -45,17 +47,18 @@ void set_daily_cycle(RTC_TimeTypeDef _startDay, RTC_TimeTypeDef _stopDay)
   stopDay  = _stopDay;
 }
 
-enum dailyCycle get_daily_cycle()
+dailyCycle get_daily_cycle()
 {
+  // daily cycle is inactivated
   if(startDay.Hours == stopDay.Hours && startDay.Minutes == stopDay.Minutes)
     return day;
 
   const RTC_TimeTypeDef* t = get_time_struct();
   if((t->Hours*60+t->Minutes) >= (startDay.Hours*60+startDay.Minutes)){
-        if((t->Hours*60+t->Minutes) <= (stopDay.Hours*60+stopDay.Minutes)){
-            return day;
-        }
+    if((t->Hours*60+t->Minutes) <= (stopDay.Hours*60+stopDay.Minutes)){
+          return day;
       }
+    }
   return night;
 }
 
@@ -113,8 +116,8 @@ void humidity_control()
 
 void lighting_control()
 {
-  static bool light = 0;
-  if(setLighting){
+  static bool light = false;
+  if(setLighting == true){
     if(get_daily_cycle() == day){
       light = true;
     }
@@ -126,7 +129,7 @@ void lighting_control()
     light = false;
   }
 
-  if(light){
+  if(light == true){
     // function to turn on the light
     HAL_GPIO_WritePin(LIGHT_GPIO_Port, LIGHT_Pin, RESET);
   }

@@ -68,7 +68,8 @@ Src/clock.c \
 Src/menu.c \
 Src/menu_callback.c \
 Src/common.c \
-Src/st7735s_spi_lib.c
+Src/st7735s_spi_lib.c \
+Src/backup_memory.c
 
 # ASM sources
 ASM_SOURCES =  \

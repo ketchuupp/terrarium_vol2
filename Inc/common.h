@@ -10,7 +10,8 @@
 
 #include "main.h"
 
-enum dailyCycle {day = 0, night = 1};
+// enum dailyCycle {day = 0, night = 1};
+typedef enum {day = 0, night = 1} dailyCycle;
 
 void (*key_up_func)(void);
 void (*key_down_func)(void);
@@ -32,7 +33,7 @@ void set_night_temperature(int _temperature);
 void set_humidity(int _humidity);
 void set_lighting(bool _lighting);
 void set_daily_cycle(RTC_TimeTypeDef _startDay, RTC_TimeTypeDef _stopDay);
-enum dailyCycle get_daily_cycle();
+dailyCycle get_daily_cycle();
 
 
 //terrarium control
