@@ -10,7 +10,6 @@
 
 #include "main.h"
 
-// enum dailyCycle {day = 0, night = 1};
 typedef enum {day = 0, night = 1} dailyCycle;
 
 void (*key_up_func)(void);
