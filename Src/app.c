@@ -17,6 +17,7 @@
 #include "clock.h"
 #include "main.h"
 #include "common.h"
+#include "backup_memory.h"
 
 static int interruptChangesFlag = 1;
 static int backMenuFlag         = 0;
@@ -30,10 +31,13 @@ extern void (*key_back_func)(void);
 extern const unsigned char font1[];
 extern const unsigned char font2[];
 
-static void read_flags(void);
+static void read_reset_flags(void);
+static void set_parameters_from_BCKU_memory();
 
 void app(void)
 {
+  read_reset_flags();
+
   ST7735_SPI_HwConfig();
   ST7735_SPI_Init();
   __HAL_TIM_CLEAR_FLAG(&htim2,TIM_FLAG_UPDATE);
@@ -49,7 +53,7 @@ void app(void)
   key_enter_func  = run_menu;
   key_back_func   = NULL;
 
-  read_flags();
+  
 
   while(1){ // main program loop
     key_press_enter();
@@ -144,23 +148,34 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   }
 }
 
-static void read_flags(void)
+
+static void read_reset_flags(void)
 {
   // Pin reset
   if(__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST)){
-    
+    set_parameters_from_BCKU_memory();
   }
   // software reset
   else if(__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST)){
-
+    set_parameters_from_BCKU_memory();
   }
   // Low Power reset
   else if(__HAL_RCC_GET_FLAG(RCC_FLAG_LPWRRST)){
-
+    set_parameters_from_BCKU_memory();
   }
   else{
 
   }
   
   __HAL_RCC_CLEAR_RESET_FLAGS();
+}
+
+static void set_parameters_from_BCKU_memory()
+{
+  read_time_from_RTC();
+  set_day_temperature((int)read_day_temp_from_BR());
+  set_night_temperature((int)read_night_temp_from_BR());
+  set_humidity((int)read_humidity_from_BR());
+  set_lighting(read_lighting_from_BR());
+  set_daily_cycle(read_start_day_from_BR(), read_start_day_from_BR());
 }
