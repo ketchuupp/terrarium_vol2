@@ -69,9 +69,11 @@ Src/menu.c \
 Src/menu_callback.c \
 Src/common.c \
 Src/st7735s_spi_lib.c \
-Src/backup_memory.c		\ \
-Src/BME280.c	\ \
-Src/BME280_add.c
+Src/backup_memory.c \
+Src/BME280_add.c \
+Src/bme280.c \
+Src/syscalls.c \
+Src/sysmem.c
 
 
 # ASM sources
@@ -132,7 +134,6 @@ C_INCLUDES =  \
 -IDrivers/STM32F1xx_HAL_Driver/Inc \
 -IDrivers/STM32F1xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F1xx/Include \
--IDrivers/CMSIS/Include \
 -IDrivers/CMSIS/Include \
 -IInc
 

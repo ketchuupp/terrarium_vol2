@@ -168,8 +168,8 @@ void callback_daily_cycle_yes() // not finished
 {
   //   static RTC_TimeTypeDef t1 = {6, 30, 0};
   //   static RTC_TimeTypeDef t2 = {21, 0, 0};
-  RTC_TimeTypeDef t1 = {6, 30, 0};
-  RTC_TimeTypeDef t2 = {21, 0, 0};
+  RTC_TimeTypeDef *t1 = get_start_day();
+  RTC_TimeTypeDef *t2 = get_stop_day();
 
   // static bool visitSetNight = false;
   // static bool visitSetDay   = false;
@@ -208,7 +208,7 @@ void callback_daily_cycle_yes() // not finished
 
       ST7735_FillRect(0, 2*12 + 5, 127, 12 + 5 + 11 + 17, RGB(0, 70, 0));
       char buffClock[8];
-      sprintf(buffClock, "%02d:%02d", t1.Hours, t1.Minutes);
+      sprintf(buffClock, "%02d:%02d", t1->Hours, t1->Minutes);
       ST7735_WriteTextXY(buffClock,  20, 12 + 7 + 11, RGB(255, 255, 255),
                           RGB(0, 70, 0), font2);
 
@@ -217,7 +217,7 @@ void callback_daily_cycle_yes() // not finished
                           RGB(0, 70, 0), font1);
 
       ST7735_FillRect(0,12 + 5 + 17 + 2*11, 127, 3*12 + 5 + 17 + 17, RGB(0, 70, 0));
-      sprintf(buffClock, "%02d:%02d", t2.Hours, t2.Minutes);
+      sprintf(buffClock, "%02d:%02d", t2->Hours, t2->Minutes);
       ST7735_WriteTextXY(buffClock, 20, 12 + 7 + 11 + 17 + 12, RGB(255, 255, 255),
                           RGB(0, 70, 0), font2);
 
@@ -228,8 +228,8 @@ void callback_daily_cycle_yes() // not finished
       if(actualizationOption0){
         if(!visitSetDay){
           visitSetDay   = true;
-          clockHours    = t1.Hours;
-          clockMinutes  = t1.Minutes;
+          clockHours    = t1->Hours;
+          clockMinutes  = t1->Minutes;
         }
         ST7735_FillRect(0, 2*12 + 5, 127, 12 + 5 + 11 + 17, RGB(0, 70, 0));
         char buffClock[8];
@@ -239,15 +239,15 @@ void callback_daily_cycle_yes() // not finished
 
         actualizationOption0 = false;
       }
-      t1.Hours    = clockHours;
-      t1.Minutes  = clockMinutes;
+      t1->Hours    = clockHours;
+      t1->Minutes  = clockMinutes;
     }
     else if(numberOfOption > 1){  // set finish day
       if(actualizationOption0 || !visitSetNight){
         if(!visitSetNight){
           visitSetNight = true;
-          clockHours    = t2.Hours;
-          clockMinutes  = t2.Minutes;
+          clockHours    = t2->Hours;
+          clockMinutes  = t2->Minutes;
         }
 
         ST7735_FillRect(0,12 + 5 + 17 + 2*11, 127, 3*12 + 5 + 17 + 17, RGB(0, 70, 0));
@@ -258,18 +258,18 @@ void callback_daily_cycle_yes() // not finished
 
         actualizationOption0 = false;
       }
-      t2.Hours    = clockHours;
-      t2.Minutes  = clockMinutes;
+      t2->Hours    = clockHours;
+      t2->Minutes  = clockMinutes;
     }
 
   }//  end main loop function
   visitSetDay   = false;
   visitSetNight = false;
-  set_daily_cycle(t1, t2);
+  set_daily_cycle(*t1, *t2);
 
   // write changes to backup memory
-  write_start_day_to_BR(&t1);
-  write_stop_day_to_BR(&t2);
+  write_start_day_to_BR(t1);
+  write_stop_day_to_BR(t2);
   
   back_to_menu();
 }
@@ -407,7 +407,7 @@ static void sub_day_temperature()
 static void add_humidity()
 {
   int temp = get_humidity_value();
-  if(temp < 80)
+  if(temp < 100)
     set_humidity(temp+1);
   actualizationOption0 = true;
 }
@@ -426,37 +426,37 @@ static void sub_humidity()
 
 static void add_clock_minutes()
 {
-  clockMinutes++;
-  if(clockMinutes >= 60){
+  if(clockMinutes >= 59)
     clockMinutes = 0;
-  }
+  else
+    clockMinutes++;
   actualizationOption0 = true;
 }
 
 static void sub_clock_minutes()
 {
-  clockMinutes--;
-  if(clockMinutes <= 0){
+  if(clockMinutes <= 0)
     clockMinutes = 59;
-  }
+  else
+    clockMinutes--;
   actualizationOption0 = true;
 }
 
 static void add_clock_hours()
 {
-  clockHours++;
-  if(clockHours >= 24){
+  if(clockHours >= 23)
     clockHours = 0;
-  }
+  else
+    clockHours++;
   actualizationOption0 = true;
 }
 
 static void sub_clock_hours()
 {
-  clockHours--;
-  if(clockHours <= 0){
+  if(clockHours <= 0)
     clockHours = 23;
-  }
+  else
+    clockHours--;
   actualizationOption0 = true;
 }
 

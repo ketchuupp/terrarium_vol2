@@ -17,19 +17,21 @@
 static int setDayTemperature     = 25;    //C
 static int setNightTemperature   = 20;    //C
 static int setHumidity           = 50;    //%
+static bool setLighting          = false;
 
 static int temperatureFromSensor;
 static int humidityFromSensor;
 
-static bool setLighting          = false;
-static RTC_TimeTypeDef startDay  = {6, 0, 0,};
-static RTC_TimeTypeDef stopDay   = {22, 0, 0,};
+static RTC_TimeTypeDef startDay  = {6, 0, 0};
+static RTC_TimeTypeDef stopDay   = {22, 0, 0};
 
 
 // getters
 int get_day_temperature_value()   { return setDayTemperature; }
 int get_night_temperature_value() { return setNightTemperature; }
 int get_humidity_value()          { return setHumidity; }
+RTC_TimeTypeDef *get_start_day()   {return &startDay; }
+RTC_TimeTypeDef *get_stop_day()    {return &stopDay;  }
 bool get_lighting_value()         { return setLighting; }
 
 // FIXME
@@ -151,12 +153,14 @@ void lighting_control()
 // 
 bool read_temp_from_sensor()
 { 
-  temperatureFromSensor = BME_read_temp();
+  //temperatureFromSensor = (uint8_t)BME_read_temp();
+  temperatureFromSensor = 23;
   return 1;
 }
 bool read_humid_from_sensor()
 {
-  humidityFromSensor = BME_read_humidity;
+  //humidityFromSensor = (uint8_t)BME_read_humidity();
+  humidityFromSensor = 60;
   return 1;
 }
 

@@ -17,14 +17,18 @@ void write_day_temp_to_BR(uint8_t t)
 }
 uint8_t read_day_temp_from_BR(void)
 {
-  unsigned int buff;
+  uint32_t buff;
   buff = (HAL_RTCEx_BKUPRead(RTC_ADDR, ADDR_TEMP));
   return (uint8_t)buff;
 }
 
 void write_night_temp_to_BR(uint8_t t)
 {
-  HAL_RTCEx_BKUPWrite(RTC_ADDR , ADDR_TEMP, t << 8);
+  uint32_t buff;
+  buff = (HAL_RTCEx_BKUPRead(RTC_ADDR, ADDR_TEMP));
+  buff |= t << 8;
+
+  HAL_RTCEx_BKUPWrite(RTC_ADDR , ADDR_TEMP, buff);
 }
 uint8_t read_night_temp_from_BR(void)
 {
@@ -41,14 +45,18 @@ void write_humidity_to_BR(uint8_t h)
 }
 uint8_t read_humidity_from_BR(void)
 {
-  unsigned int buff;
+  uint32_t buff;
   buff = (HAL_RTCEx_BKUPRead(RTC_ADDR, ADDR_LIGHTING_AND_HUMIDITY));
   return (uint8_t)buff;
 }
 
 void write_lighting_to_BR(bool l)
 {
-  HAL_RTCEx_BKUPWrite(RTC_ADDR , ADDR_LIGHTING_AND_HUMIDITY, (uint8_t)l << 8);
+  uint32_t buff;
+  buff = (HAL_RTCEx_BKUPRead(RTC_ADDR, ADDR_LIGHTING_AND_HUMIDITY));
+  buff |= (uint8_t)l << 8;
+
+  HAL_RTCEx_BKUPWrite(RTC_ADDR , ADDR_LIGHTING_AND_HUMIDITY, buff);
 }
 bool read_lighting_from_BR(void)
 {
