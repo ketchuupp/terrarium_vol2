@@ -158,6 +158,7 @@ void callback_humidity()
     actualizationOption0 = false;
     }
   } //  end main loop function
+
   // write changes to backup memory
   write_humidity_to_BR((uint8_t)get_humidity_value());
   back_to_menu();
@@ -269,6 +270,7 @@ void callback_daily_cycle_yes() // not finished
   // write changes to backup memory
   write_start_day_to_BR(&t1);
   write_stop_day_to_BR(&t2);
+  
   back_to_menu();
 }
 
@@ -276,22 +278,31 @@ void callback_daily_cycle_no()
 {
   RTC_TimeTypeDef t = {0, 0, 0};
   set_daily_cycle(t, t);
+
+  // write changes to backup memory
+  write_start_day_to_BR(&t);
+  write_stop_day_to_BR(&t);
+
   menu_back();
 }
 
 void callback_lighting_yes()
 {
   set_lighting(true);
+
   // write changes to backup memory
   write_lighting_to_BR(true);
+
   menu_back();
 }
 
 void callback_lighting_no()
 {
   set_lighting(false);
+
   // write changes to backup memory
   write_lighting_to_BR(false);
+
   menu_back();
 }
 

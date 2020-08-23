@@ -11,6 +11,7 @@
 
 extern RTC_HandleTypeDef hrtc;
 
+// FIXME
 static RTC_TimeTypeDef Time = {21, 30, 0};
 
 const RTC_TimeTypeDef* get_time_struct()

@@ -49,5 +49,4 @@ RTC_TimeTypeDef read_start_day_from_BR(void);
 void write_stop_day_to_BR(const RTC_TimeTypeDef *t);
 RTC_TimeTypeDef read_stop_day_from_BR(void);
 
-
 #endif /* BACKUP_MEMORY_H_*/
