@@ -18,6 +18,7 @@
 #include "main.h"
 #include "common.h"
 #include "backup_memory.h"
+#include "BME280_add.h"
 
 static int interruptChangesFlag = 1;
 static int backMenuFlag         = 0;
@@ -42,6 +43,7 @@ void app(void)
   ST7735_SPI_Init();
   __HAL_TIM_CLEAR_FLAG(&htim2,TIM_FLAG_UPDATE);
   HAL_TIM_Base_Start_IT(&htim2);
+  BME280_init();
 
   heating_control();
   humidity_control();
@@ -140,6 +142,10 @@ void back_menu(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim->Instance == TIM2){
+    BME280_read_data();
+    read_temp_from_sensor();
+    read_humid_from_sensor();
+
     heating_control();
     humidity_control();
     lighting_control();
@@ -166,7 +172,7 @@ static void read_reset_flags(void)
   else{
 
   }
-  
+  //IWDG_KR_KEY
   __HAL_RCC_CLEAR_RESET_FLAGS();
 }
 

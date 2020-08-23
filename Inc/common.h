@@ -8,7 +8,8 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-#include "main.h"
+//#include "main.h"
+#include "stm32f1xx_hal.h"
 
 typedef enum {day = 0, night = 1} dailyCycle;
 
@@ -22,6 +23,7 @@ int get_day_temperature_value();
 int get_night_temperature_value();
 int get_humidity_value();
 bool get_lighting_value();
+
 int get_temperature_from_sensor();
 int get_humidity_from_sensor();
 
@@ -41,8 +43,8 @@ void humidity_control();
 void lighting_control();
 
 //read values from sensors
-int get_temp_from_sensor();
-int get_humid_from_sensor();
+bool read_temp_from_sensor();
+bool read_humid_from_sensor();
 
 
 //functions for buttons

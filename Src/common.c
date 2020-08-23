@@ -11,6 +11,7 @@
 #include "main.h"
 #include "menu.h"
 #include "clock.h"
+#include "BME280_add.h"
 
 //FIXME
 static int setDayTemperature     = 25;    //C
@@ -21,8 +22,8 @@ static int temperatureFromSensor;
 static int humidityFromSensor;
 
 static bool setLighting          = false;
-static RTC_TimeTypeDef startDay;  // = {6, 0, 0,};
-static RTC_TimeTypeDef stopDay;   // = {22, 0, 0,};
+static RTC_TimeTypeDef startDay  = {6, 0, 0,};
+static RTC_TimeTypeDef stopDay   = {22, 0, 0,};
 
 
 // getters
@@ -30,6 +31,9 @@ int get_day_temperature_value()   { return setDayTemperature; }
 int get_night_temperature_value() { return setNightTemperature; }
 int get_humidity_value()          { return setHumidity; }
 bool get_lighting_value()         { return setLighting; }
+
+// FIXME
+// add reading from sensorss
 int get_temperature_from_sensor() { return temperatureFromSensor; }
 int get_humidity_from_sensor()    { return humidityFromSensor; }
 
@@ -49,7 +53,7 @@ void set_daily_cycle(RTC_TimeTypeDef _startDay, RTC_TimeTypeDef _stopDay)
 
 dailyCycle get_daily_cycle()
 {
-  // daily cycle is inactivated
+  // daily cycle is disabled
   if(startDay.Hours == stopDay.Hours && startDay.Minutes == stopDay.Minutes)
     return day;
 
@@ -67,7 +71,9 @@ dailyCycle get_daily_cycle()
 //FIXME using PWM
 void heating_control() 
 {
-  temperatureFromSensor = get_temp_from_sensor();
+  
+  // static variable
+  extern int temperatureFromSensor;
   static bool heat = false;
 
   if(get_daily_cycle() == day){
@@ -96,7 +102,8 @@ void heating_control()
 
 void humidity_control()
 {
-  humidityFromSensor = get_humid_from_sensor();
+  // static variable
+  extern int humidityFromSensor;
   static bool humidification = false;
 
   if(setHumidity-10 > humidityFromSensor)
@@ -141,13 +148,16 @@ void lighting_control()
 
 // read values from sensors
 // TODO
-int get_temp_from_sensor()
-{
-  return 25;
+// 
+bool read_temp_from_sensor()
+{ 
+  temperatureFromSensor = BME_read_temp();
+  return 1;
 }
-int get_humid_from_sensor()
+bool read_humid_from_sensor()
 {
-  return 39;
+  humidityFromSensor = BME_read_humidity;
+  return 1;
 }
 
 //-----------------------------------------------------------------------------
