@@ -1,10 +1,6 @@
-/*
- * bme280_add.c
- *
- *  Created on: Nov 29, 2019
- *      Author: piotr
- * https://gitlab.com/piotrduba/kurs-stm32/e07-i2c
- */
+/* 
+ * BME280_add.c 
+*/
 #include <stdio.h>
 
 #include "bme280_add.h"
@@ -51,13 +47,8 @@ int8_t BME280_init(void) {
 int8_t BME280_read_data(void) {
 	int8_t rslt;
 
-	// printf("Temperature, Pressure, Humidity\r\n");
-	/* Get data from sensor */
 	rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &bme);
-	
-	// uncomment
 	//bme.delay_ms(70);
-	//print_sensor_data(&comp_data);
 
 	return rslt;
 }
@@ -90,14 +81,6 @@ int32_t BME_read_temp(void) {
 	return comp_data.temperature;
 }
 #endif
-
-void print_sensor_data(struct bme280_data *comp_data) {
-#ifdef BME280_FLOAT_ENABLE
-        printf("%0.2f C, %0.2f Pa, %0.2f %%\r\n",comp_data->temperature, comp_data->pressure, comp_data->humidity);
-#else
-        printf("%ld, %ld, %ld\r\n",comp_data->temperature, comp_data->pressure, comp_data->humidity);
-#endif
-}
 
 // FIXME
 void delay_ms(uint32_t period, void *intf_ptr) {

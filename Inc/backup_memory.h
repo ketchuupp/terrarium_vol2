@@ -34,7 +34,7 @@ extern RTC_HandleTypeDef hrtc;
 void write_day_temp_to_BR(uint8_t t);
 uint8_t read_day_temp_from_BR(void);
 
-void write_night_temp_to_BR(uint8_t);
+void write_night_temp_to_BR(uint8_t t);
 uint8_t read_night_temp_from_BR(void);
 
 void write_humidity_to_BR(uint8_t h);

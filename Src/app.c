@@ -18,7 +18,7 @@
 #include "main.h"
 #include "common.h"
 #include "backup_memory.h"
-//#include "BME280_add.h"
+#include "BME280_add.h"
 
 static int interruptChangesFlag = 1;
 static int backMenuFlag         = 0;
