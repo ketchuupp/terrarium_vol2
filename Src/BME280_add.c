@@ -3,23 +3,29 @@
  *
  *  Created on: Nov 29, 2019
  *      Author: piotr
+ * https://gitlab.com/piotrduba/kurs-stm32/e07-i2c
  */
-#include "bme280.h"
+#include <stdio.h>
+
 #include "bme280_add.h"
+#include "bme280.h"
 #include "i2c.h"
 
 static struct bme280_dev bme;
 static struct bme280_data comp_data;
+uint8_t dev_addr = BME280_I2C_ADDR_PRIM;
+
 
 int8_t BME280_init(void) {
 	int8_t rslt = BME280_OK;
 	uint8_t settings_sel;
 
-	bme.dev_id = (BME280_I2C_ADDR_PRIM<<1);
+	bme.chip_id = (BME280_I2C_ADDR_PRIM<<1);
 	bme.intf = BME280_I2C_INTF;
 	bme.read = i2c_read;
 	bme.write = i2c_write;
-	bme.delay_ms = delay_ms;
+	bme.delay_us = delay_ms;
+	bme.intf_ptr = &dev_addr;
 
 	rslt = bme280_init(&bme);
 
@@ -45,8 +51,8 @@ int8_t BME280_init(void) {
 int8_t BME280_read_data(void) {
 	int8_t rslt;
 
-	printf("Temperature, Pressure, Humidity\r\n");
-	/* Pobranie danych z czujnika i wyswietlenie */
+	// printf("Temperature, Pressure, Humidity\r\n");
+	/* Get data from sensor */
 	rslt = bme280_get_sensor_data(BME280_ALL, &comp_data, &bme);
 	
 	// uncomment
@@ -93,18 +99,26 @@ void print_sensor_data(struct bme280_data *comp_data) {
 #endif
 }
 
-void delay_ms(uint32_t period) {
-	HAL_Delay(perioid);
+// FIXME
+void delay_ms(uint32_t period, void *intf_ptr) {
+	HAL_Delay(period);
 }
 
-int8_t i2c_read(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
+int8_t i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr) {
+		uint8_t id;
+    id = *((uint8_t *)intf_ptr);
+		
     int8_t rslt = 0; /* Return 0 for Success, non-zero for failure */
-    HAL_I2C_Mem_Read(&hi2c1, dev_id, reg_addr, 1, reg_data, len, 100);
+    HAL_I2C_Mem_Read(&hi2c2, id, reg_addr, 1, reg_data, len, 100);
     return rslt;
 }
 
-int8_t i2c_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *reg_data, uint16_t len) {
+int8_t i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, void *intf_ptr) {
+		uint8_t id;
+    id = *((uint8_t *)intf_ptr);
+		uint8_t data = *reg_data;
+
     int8_t rslt = 0; /* Return 0 for Success, non-zero for failure */
-    HAL_I2C_Mem_Write(&hi2c1, dev_id, reg_addr, 1, reg_data, len, 100);
+    HAL_I2C_Mem_Write(&hi2c2, id, reg_addr, 1, &data, len, 100);
     return rslt;
 }

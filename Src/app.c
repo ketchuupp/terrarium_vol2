@@ -18,7 +18,7 @@
 #include "main.h"
 #include "common.h"
 #include "backup_memory.h"
-#include "BME280_add.h"
+//#include "BME280_add.h"
 
 static int interruptChangesFlag = 1;
 static int backMenuFlag         = 0;
@@ -43,8 +43,11 @@ void app(void)
   ST7735_SPI_Init();
   __HAL_TIM_CLEAR_FLAG(&htim2,TIM_FLAG_UPDATE);
   HAL_TIM_Base_Start_IT(&htim2);
-  BME280_init();
+  //BME280_init();
+  //BME280_read_data();
 
+  read_temp_from_sensor();
+  read_humid_from_sensor();
   heating_control();
   humidity_control();
   lighting_control();
@@ -170,7 +173,15 @@ static void read_reset_flags(void)
     set_parameters_from_BCKU_memory();
   }
   else{
+    // first device launch
+  set_day_temperature(26);
+  set_night_temperature(22);
+  set_humidity(50);
+  set_lighting(false);
 
+  RTC_TimeTypeDef t1 = {7,0,0};
+  RTC_TimeTypeDef t2 = {21,0,0};
+  set_daily_cycle(t1, t2);
   }
   //IWDG_KR_KEY
   __HAL_RCC_CLEAR_RESET_FLAGS();
@@ -183,5 +194,5 @@ static void set_parameters_from_BCKU_memory()
   set_night_temperature((int)read_night_temp_from_BR());
   set_humidity((int)read_humidity_from_BR());
   set_lighting(read_lighting_from_BR());
-  set_daily_cycle(read_start_day_from_BR(), read_start_day_from_BR());
+  set_daily_cycle(read_start_day_from_BR(), read_stop_day_from_BR());
 }
