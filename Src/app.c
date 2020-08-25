@@ -10,7 +10,6 @@
 #include <stdbool.h>
 #include <stdio.h>  //sprintf
 
-//#include "stm32f1xx_hal_rcc.h"
 #include "tim.h"
 #include "st7735s_spi_lib.h"
 #include "menu.h"
@@ -43,8 +42,8 @@ void app(void)
   ST7735_SPI_Init();
   __HAL_TIM_CLEAR_FLAG(&htim2,TIM_FLAG_UPDATE);
   HAL_TIM_Base_Start_IT(&htim2);
-  //BME280_init();
-  //BME280_read_data();
+  BME280_init();
+  BME280_read_data();
 
   read_temp_from_sensor();
   read_humid_from_sensor();

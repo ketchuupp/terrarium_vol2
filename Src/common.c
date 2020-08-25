@@ -30,8 +30,8 @@ static RTC_TimeTypeDef stopDay   = {22, 0, 0};
 int get_day_temperature_value()   { return setDayTemperature; }
 int get_night_temperature_value() { return setNightTemperature; }
 int get_humidity_value()          { return setHumidity; }
-RTC_TimeTypeDef *get_start_day()   {return &startDay; }
-RTC_TimeTypeDef *get_stop_day()    {return &stopDay;  }
+RTC_TimeTypeDef *get_start_day()  { return &startDay; }
+RTC_TimeTypeDef *get_stop_day()   { return &stopDay;  }
 bool get_lighting_value()         { return setLighting; }
 
 // FIXME
@@ -79,7 +79,7 @@ void heating_control()
   static bool heat = false;
 
   if(get_daily_cycle() == day){
-    if(setDayTemperature-2 > temperatureFromSensor)
+    if(setDayTemperature-1 > temperatureFromSensor)
       heat = true;
     else if(setDayTemperature+1 < temperatureFromSensor)
       heat = false;
@@ -108,9 +108,9 @@ void humidity_control()
   extern int humidityFromSensor;
   static bool humidification = false;
 
-  if(setHumidity-10 > humidityFromSensor)
+  if(setHumidity-5 > humidityFromSensor)
     humidification = true;
-  else if(setHumidity+10 < humidityFromSensor)
+  else if(setHumidity+5 < humidityFromSensor)
     humidification = false;
 
   if(humidification){
@@ -153,14 +153,14 @@ void lighting_control()
 // 
 bool read_temp_from_sensor()
 { 
-  //temperatureFromSensor = (uint8_t)BME_read_temp();
-  temperatureFromSensor = 23;
+  temperatureFromSensor = (uint8_t)BME_read_temp();
+  //temperatureFromSensor = 23;
   return 1;
 }
 bool read_humid_from_sensor()
 {
-  //humidityFromSensor = (uint8_t)BME_read_humidity();
-  humidityFromSensor = 60;
+  humidityFromSensor = (uint8_t)BME_read_humidity();
+  //humidityFromSensor = 60;
   return 1;
 }
 
